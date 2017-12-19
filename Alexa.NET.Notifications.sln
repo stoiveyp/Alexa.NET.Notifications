@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27205.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa.NET.Notifications", "Alexa.NET.Notifications\Alexa.NET.Notifications.csproj", "{30FA0C59-0B0F-4451-8106-B25AC3D1443D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alexa.NET.Notifications.Tests", "Alexa.NET.Notifications.Tests\Alexa.NET.Notifications.Tests.csproj", "{494604E2-3BB8-4DEB-AF46-0316FFAED23B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{30FA0C59-0B0F-4451-8106-B25AC3D1443D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30FA0C59-0B0F-4451-8106-B25AC3D1443D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30FA0C59-0B0F-4451-8106-B25AC3D1443D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30FA0C59-0B0F-4451-8106-B25AC3D1443D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{494604E2-3BB8-4DEB-AF46-0316FFAED23B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{494604E2-3BB8-4DEB-AF46-0316FFAED23B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{494604E2-3BB8-4DEB-AF46-0316FFAED23B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{494604E2-3BB8-4DEB-AF46-0316FFAED23B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E68367AA-EDBA-49A0-8D1A-EE4750AB9C08}
+	EndGlobalSection
+EndGlobal
