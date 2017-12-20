@@ -16,6 +16,8 @@ namespace Alexa.NET
         public const string NorthAmericaEndpoint = "https://api.amazonalexa.com/v2/notifications";
         public const string EuropeEndpoint = "https://api.eu.amazonalexa.com/v2/notifications";
 
+        private const string PendingState = "pending";
+        private const string ArchivedState = "archived";
         private static readonly JsonSerializer Serializer = JsonSerializer.CreateDefault();
         public HttpClient Client { get; set; }
 
@@ -71,24 +73,81 @@ namespace Alexa.NET
                new StringContent(JObject.FromObject(request).ToString()));
         }
 
-        public Uri NotificationUri(string notificationId, string status = null)
+        public Uri NotificationUri(string notificationId = null, string status = null, string query = null)
         {
-            return new Uri(Client.BaseAddress, Client.BaseAddress.AbsolutePath + "/" + notificationId + (!string.IsNullOrWhiteSpace(status) ? "/" : string.Empty) + status);
+            var builder = new UriBuilder(Client.BaseAddress);
+            if (!string.IsNullOrWhiteSpace(notificationId))
+            {
+                builder.Path += ("/" + notificationId);
+            }
+
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                builder.Path += ("/" + status);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                builder.Query = ("?" + query);
+            }
+            return builder.Uri;
         }
 
-        public Task Delete(string notificationId)
+        public Task Delete(string notificationId, NotificationState state = NotificationState.Any)
         {
-            return Client.DeleteAsync(NotificationUri(notificationId));
+            switch (state)
+            {
+                case NotificationState.Any:
+                    return Client.DeleteAsync(NotificationUri(notificationId));
+                case NotificationState.Pending:
+                    return Client.DeleteAsync(NotificationUri(notificationId, PendingState));
+                case NotificationState.Archived:
+                    return Client.DeleteAsync(NotificationUri(notificationId, ArchivedState));
+            }
+            throw new InvalidOperationException("Unknown notification state");
         }
 
-        public Task DeletePending(string notificationId)
+        public Task<NotificationListResponse> List(NotificationState state)
         {
-            return Client.DeleteAsync(NotificationUri(notificationId,"pending"));
+            return ListRequest(state, string.Empty);
         }
 
-        public Task DeleteArchived(string notificationId)
+        public Task<NotificationListResponse> List(NotificationState state, int pageSize)
         {
-            return Client.DeleteAsync(NotificationUri(notificationId, "archived"));
+            return ListRequest(state, $"pageSize={pageSize}");
+        }
+
+        public Task<NotificationListResponse> List(NotificationState state, string reference)
+        {
+            return ListRequest(state, $"referenceId={reference}");
+        }
+
+        private async Task<NotificationListResponse> ListRequest(NotificationState state, string query)
+        {
+            Task<HttpResponseMessage> stateTask = null;
+            switch (state)
+            {
+                case NotificationState.Any:
+                    stateTask = Client.GetAsync(NotificationUri(string.Empty, string.Empty, query));
+                    break;
+                case NotificationState.Pending:
+                    stateTask = Client.GetAsync(NotificationUri(string.Empty, PendingState, query));
+                    break;
+                case NotificationState.Archived:
+                    stateTask = Client.GetAsync(NotificationUri(string.Empty, ArchivedState, query));
+                    break;
+            }
+
+            if (stateTask == null)
+            {
+                throw new InvalidOperationException("unknown notification state");
+            }
+
+            var response = await stateTask;
+            using(var reader = new JsonTextReader(new StreamReader(await response.Content.ReadAsStreamAsync())))
+            {
+                return Serializer.Deserialize<NotificationListResponse>(reader);
+            }
         }
     }
 }

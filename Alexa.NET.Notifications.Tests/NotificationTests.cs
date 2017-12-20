@@ -20,15 +20,18 @@ namespace Alexa.NET.Notifications.Tests
             var links = notification.Links;
             Assert.Equal(3, links.Count);
             Assert.Equal(
-                new Uri("https://api.amazonalexa.com/v2/notifications/ab2cd6a3-72c6-43ad-9ace-47e4f45cba99/dismiss", UriKind.Absolute).ToString(),
+                new Uri("https://api.amazonalexa.com/v2/notifications/ab2cd6a3-72c6-43ad-9ace-47e4f45cba99/dismiss",
+                    UriKind.Absolute).ToString(),
                 links["dismiss"].ToString());
 
             Assert.Equal(
-                new Uri("https://api.amazonalexa.com/v2/notifications/ab2cd6a3-72c6-43ad-9ace-47e4f45cba99", UriKind.Absolute).ToString(),
+                new Uri("https://api.amazonalexa.com/v2/notifications/ab2cd6a3-72c6-43ad-9ace-47e4f45cba99",
+                    UriKind.Absolute).ToString(),
                 links["delete"].ToString());
 
             Assert.Equal(
-                new Uri("https://api.amazonalexa.com/v2/notifications/ab2cd6a3-72c6-43ad-9ace-47e4f45cba99", UriKind.Absolute).ToString(),
+                new Uri("https://api.amazonalexa.com/v2/notifications/ab2cd6a3-72c6-43ad-9ace-47e4f45cba99",
+                    UriKind.Absolute).ToString(),
                 links["update"].ToString());
         }
 
@@ -43,7 +46,13 @@ namespace Alexa.NET.Notifications.Tests
             Assert.Equal("en-US", spokenContent.Locale);
             Assert.Equal("You met your daily goal. Total steps that you took today are 12345.", spokenContent.Text);
             Assert.Equal(
-                new Speech { Elements = new List<ISsml> { new PlainText("You met your daily goal. Total steps that you took today are 12345.") } }.ToXml(),
+                new Speech
+                {
+                    Elements = new List<ISsml>
+                    {
+                        new PlainText("You met your daily goal. Total steps that you took today are 12345.")
+                    }
+                }.ToXml(),
                 spokenContent.Ssml);
         }
 
@@ -72,7 +81,8 @@ namespace Alexa.NET.Notifications.Tests
             Assert.Equal("en-US", skillContent.Locale);
             Assert.Equal("MySkill", skillContent.Name);
             Assert.Equal("MySkillIconId", skillContent.Icon.Id);
-            Assert.Equal(new Uri("https://example.com/contacts/Bob.jpg").ToString(), skillContent.Icon.Sources["x-small"].Url.ToString());
+            Assert.Equal(new Uri("https://example.com/contacts/Bob.jpg").ToString(),
+                skillContent.Icon.Sources["x-small"].Url.ToString());
         }
 
         [Fact]
@@ -90,9 +100,13 @@ namespace Alexa.NET.Notifications.Tests
             var client = GetClient(req =>
             {
                 Assert.Equal(HttpMethod.Post, req.Method);
-                Assert.Equal(req.RequestUri.ToString(), new Uri(NotificationClient.EuropeEndpoint, UriKind.Absolute).ToString());
+                Assert.Equal(req.RequestUri.ToString(),
+                    new Uri(NotificationClient.EuropeEndpoint, UriKind.Absolute).ToString());
                 Assert.Equal("xxx", req.Headers.Authorization.Parameter);
-                return new HttpResponseMessage(HttpStatusCode.OK){Content=new StringContent(JObject.FromObject(new NotificationInfo()).ToString())};
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(JObject.FromObject(new NotificationInfo()).ToString())
+                };
             });
             await client.Create(new DisplayInfo(), new SpokenInfo(), "ref", DateTime.UtcNow);
         }
@@ -106,7 +120,10 @@ namespace Alexa.NET.Notifications.Tests
                 Assert.Equal(HttpMethod.Put, req.Method);
                 Assert.Equal(req.RequestUri.ToString(), client.NotificationUri("notifyid").ToString());
                 Assert.Equal("xxx", req.Headers.Authorization.Parameter);
-                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(JObject.FromObject(new NotificationInfo()).ToString()) };
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(JObject.FromObject(new NotificationInfo()).ToString())
+                };
             });
             await client.Update("notifyid", new DisplayInfo(), new SpokenInfo(), "ref", DateTime.UtcNow);
         }
@@ -132,11 +149,11 @@ namespace Alexa.NET.Notifications.Tests
             client = GetClient(req =>
             {
                 Assert.Equal(HttpMethod.Delete, req.Method);
-                Assert.Equal(req.RequestUri.ToString(), client.NotificationUri("notifyid","pending").ToString());
+                Assert.Equal(req.RequestUri.ToString(), client.NotificationUri("notifyid", "pending").ToString());
                 Assert.Equal("xxx", req.Headers.Authorization.Parameter);
                 return new HttpResponseMessage(HttpStatusCode.Accepted);
             });
-            await client.DeletePending("notifyid");
+            await client.Delete("notifyid", NotificationState.Pending);
         }
 
         [Fact]
@@ -150,8 +167,69 @@ namespace Alexa.NET.Notifications.Tests
                 Assert.Equal("xxx", req.Headers.Authorization.Parameter);
                 return new HttpResponseMessage(HttpStatusCode.Accepted);
             });
-            await client.DeleteArchived("notifyid");
+            await client.Delete("notifyid", NotificationState.Archived);
         }
+
+        [Fact]
+        public void NotificationListDeserializesCorrectly()
+        {
+            var listresponse = Utility.GetObjectFromExample<NotificationListResponse>("NotificationList.json");
+            Assert.Equal(10,listresponse.TotalCount);
+            Assert.Single(listresponse.Notifications);
+            Assert.True(listresponse.Links.ContainsKey("next"));
+        }
+
+        [Fact]
+        public async Task ListGeneratesCorrectRequest()
+        {
+            NotificationClient client = null;
+            client = GetClient(req =>
+            {
+                Assert.Equal(HttpMethod.Get, req.Method);
+                Assert.Equal(req.RequestUri.ToString(), client.NotificationUri(string.Empty).ToString());
+                Assert.Equal("xxx", req.Headers.Authorization.Parameter);
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(Utility.GetExampleJson("NotificationList.json")) };
+            });
+            await client.List(NotificationState.Any);
+        }
+
+        [Fact]
+        public async Task ListPendingGeneratesCorrectRequest()
+        {
+            NotificationClient client = null;
+            client = GetClient(req =>
+            {
+                Assert.Equal(HttpMethod.Get, req.Method);
+                Assert.Equal(req.RequestUri.ToString(), client.NotificationUri(string.Empty,"pending").ToString());
+                Assert.Equal("xxx", req.Headers.Authorization.Parameter);
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(Utility.GetExampleJson("NotificationList.json")) };
+            });
+            await client.List(NotificationState.Pending);
+        }
+
+        [Fact]
+        public async Task ListArchivedGeneratesCorrectRequest()
+        {
+            NotificationClient client = null;
+            client = GetClient(req =>
+            {
+                Assert.Equal(HttpMethod.Get, req.Method);
+                Assert.Equal(req.RequestUri.ToString(), client.NotificationUri(string.Empty,"archived").ToString());
+                Assert.Equal("xxx", req.Headers.Authorization.Parameter);
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(Utility.GetExampleJson("NotificationList.json")) };
+            });
+            await client.List(NotificationState.Archived);
+        }
+
+        [Fact]
+        public async Task ListProducesCorrectResponse()
+        {
+            NotificationClient client = null;
+            client = GetClient(req => new HttpResponseMessage(HttpStatusCode.OK){Content = new StringContent(Utility.GetExampleJson("NotificationList.json"))});
+            var response = await client.List(NotificationState.Any);
+            Assert.Single(response.Notifications);
+        }
+
 
         private NotificationClient GetClient(Func<HttpRequestMessage, HttpResponseMessage> action)
         {

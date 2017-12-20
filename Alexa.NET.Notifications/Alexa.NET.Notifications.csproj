@@ -14,6 +14,7 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>Steven Pears</Authors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.1-pre</Version>
   </PropertyGroup>
 
   <ItemGroup>

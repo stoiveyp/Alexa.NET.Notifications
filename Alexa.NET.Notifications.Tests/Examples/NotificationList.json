@@ -1,0 +1,75 @@
+﻿{
+	"totalCount": 10,
+	"notifications": [
+		{
+			"id": "ab2cd6a3-72c6-43ad-9ace-47e4f45cba99",
+			"displayInfo": {
+				"content": [
+					{
+						"locale": "en-US",
+						"toast": {
+							"primaryText": "You have reached your daily goal"
+						},
+						"title": "You have reached your daily goal of 10K steps",
+						"bodyItems": [
+							{
+								"primaryText": "You finished 12345 steps today"
+							}
+						]
+					}
+				]
+			},
+			"recipientName": "Bob",
+			"eventTime": "2016-09-22T19:04:33.672Z",
+			"referenceId": "mySkill_referenceId_to_be_provided",
+			"expiryTime": "2016-09-22T19:04:33.672Z",
+			"skillInfo": {
+				"id": "mySkill_skillId",
+				"content": [
+					{
+						"name": "MySkill",
+						"locale": "en-US",
+						"icon": {
+							"iconId": "MySkillIconId",
+							"description": "Description of asset",
+							"sources": {
+								"x-small": {
+									"url": "https://example.com/contacts/Bob.jpg",
+									"dimensions": {
+										"widthPixels": 340,
+										"heightPixels": 420
+									}
+								}
+							}
+						}
+					}
+				]
+			},
+			"spokenInfo": {
+				"content": [
+					{
+						"locale": "en-US",
+						"text": "You met your daily goal. Total steps that you took today are 12345.",
+						"ssml": "<speak>You met your daily goal. Total steps that you took today are 12345.</speak>"
+					}
+				]
+			},
+			"_links": {
+				"dismiss": {
+					"href": "https://api.amazonalexa.com/v2/notifications/ab2cd6a3-72c6-43ad-9ace-47e4f45cba99/dismiss"
+				},
+				"delete": {
+					"href": "https://api.amazonalexa.com/v2/notifications/ab2cd6a3-72c6-43ad-9ace-47e4f45cba99"
+				},
+				"update": {
+					"href": "https://api.amazonalexa.com/v2/notifications/ab2cd6a3-72c6-43ad-9ace-47e4f45cba99"
+				}
+			}
+		}
+	],
+	"links": {
+		"next": {
+			"href": "https://api.amazonalexa.com/v2/notifications/pending/?pageSize=3&referenceId=converation12345&cursor=<<some-cursor-generated-by-the-service>>"
+		}
+	}
+}
