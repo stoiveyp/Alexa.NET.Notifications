@@ -149,5 +149,10 @@ namespace Alexa.NET
                 return Serializer.Deserialize<NotificationListResponse>(reader);
             }
         }
+
+        public Task Dismiss(string notificationId)
+        {
+            return Client.DeleteAsync(NotificationUri(notificationId, "dismiss"));
+        }
     }
 }

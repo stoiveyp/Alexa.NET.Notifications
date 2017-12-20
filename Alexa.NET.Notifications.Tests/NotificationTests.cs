@@ -230,6 +230,20 @@ namespace Alexa.NET.Notifications.Tests
             Assert.Single(response.Notifications);
         }
 
+        [Fact]
+        public async Task DismissGeneratesCorrectRequest()
+        {
+            NotificationClient client = null;
+            client = GetClient(req =>
+            {
+                Assert.Equal(HttpMethod.Delete, req.Method);
+                Assert.Equal(req.RequestUri.ToString(), client.NotificationUri("xxx", "dismiss").ToString());
+                Assert.Equal("xxx", req.Headers.Authorization.Parameter);
+                return new HttpResponseMessage(HttpStatusCode.Accepted);
+            });
+            await client.Dismiss("xxx");
+        }
+
 
         private NotificationClient GetClient(Func<HttpRequestMessage, HttpResponseMessage> action)
         {
