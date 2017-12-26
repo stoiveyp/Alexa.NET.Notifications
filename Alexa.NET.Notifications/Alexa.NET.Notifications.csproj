@@ -15,6 +15,7 @@
     <Authors>Steven Pears</Authors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>0.1-pre</Version>
+    <Description>A simple .NET Core library for handling Alexa skill Notification API</Description>
   </PropertyGroup>
 
   <ItemGroup>
