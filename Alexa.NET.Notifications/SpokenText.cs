@@ -23,10 +23,10 @@ namespace Alexa.NET.Notifications
         [JsonProperty("locale")]
         public string Locale { get; set; }
 
-        [JsonProperty("ssml")]
+        [JsonProperty("ssml",NullValueHandling = NullValueHandling.Ignore)]
         public string Ssml { get; set; }
 
-        [JsonProperty("text")]
+        [JsonProperty("text",NullValueHandling = NullValueHandling.Ignore)]
         public string Text { get; set; }
     }
 }

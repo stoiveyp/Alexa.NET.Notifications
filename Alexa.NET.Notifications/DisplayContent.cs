@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Alexa.NET.Notifications
@@ -14,10 +15,15 @@ namespace Alexa.NET.Notifications
         [JsonProperty("body",NullValueHandling = NullValueHandling.Ignore)]
         public string Body { get; set; }
 
-        [JsonProperty("toast")]
+        [JsonProperty("toast",NullValueHandling = NullValueHandling.Ignore)]
         public ContentItem Toast { get; set; }
 
         [JsonProperty("bodyItems")]
-        public List<ContentItem> BodyItems { get; set; }
+        public List<ContentItem> BodyItems { get; set; } = new List<ContentItem>();
+
+        public bool ShouldSerializeBodyItems()
+        {
+            return BodyItems.Any();
+        }
     }
 }
