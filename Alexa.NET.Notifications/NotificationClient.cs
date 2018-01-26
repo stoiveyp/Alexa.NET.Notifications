@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -54,10 +55,19 @@ namespace Alexa.NET
 
         public async Task<NotificationInfo> Create(CreateUpdateRequest request)
         {
-            var response = await Client.PostAsync(Client.BaseAddress, new StringContent(JObject.FromObject(request).ToString()));
+            var content = JObject.FromObject(request).ToString(Formatting.None);
+            Console.WriteLine(content);
+            var response = await Client.PostAsync(Client.BaseAddress, new StringContent(content, Encoding.UTF8, "application/json"));
+
             using (var reader = new JsonTextReader(new StreamReader(await response.Content.ReadAsStreamAsync())))
             {
-                return Serializer.Deserialize<NotificationInfo>(reader);
+                if (response.StatusCode == HttpStatusCode.Created)
+                {
+                    return Serializer.Deserialize<NotificationInfo>(reader);
+                }
+
+                var info = Serializer.Deserialize<NotificationExceptionInfo>(reader);
+                throw new SkillNotificationException(info);
             }
         }
 
@@ -144,7 +154,7 @@ namespace Alexa.NET
             }
 
             var response = await stateTask;
-            using(var reader = new JsonTextReader(new StreamReader(await response.Content.ReadAsStreamAsync())))
+            using (var reader = new JsonTextReader(new StreamReader(await response.Content.ReadAsStreamAsync())))
             {
                 return Serializer.Deserialize<NotificationListResponse>(reader);
             }

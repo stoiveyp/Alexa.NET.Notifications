@@ -13,10 +13,28 @@ namespace Alexa.NET.Notifications
         [JsonProperty("spokenInfo")]
         public SpokenInfo SpokenInfo { get; set; }
 
-        [JsonProperty("expiryTime", ItemConverterType = typeof(IsoDateTimeConverter))]
+        [JsonProperty("expiryTime"),JsonConverter(typeof(CustomIsoConverter))]
         public DateTime ExpiryTime { get; set; }
 
         [JsonProperty("referenceId")]
         public string ReferenceId { get; set; }
+    }
+
+    public class CustomIsoConverter:JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(DateTime);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            return DateTime.Parse(existingValue.ToString());
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            writer.WriteValue(((DateTime)value).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.sssZ"));
+        }
     }
 }

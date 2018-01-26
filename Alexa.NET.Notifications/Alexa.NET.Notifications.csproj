@@ -3,7 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
     <PackageTags>amazon;alexa;echo;dot;echo dot;skills;notifications</PackageTags>
-    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <PackageReleaseNotes>Improve error handling
+Fix issue with expiryTime not formatting correctly</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/stoiveyp/Alexa.NET.Notifications</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/stoiveyp/Alexa.NET.Notifications/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/stoiveyp/Alexa.NET.Notifications</RepositoryUrl>
@@ -14,7 +15,7 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>Steven Pears</Authors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1-pre</Version>
+    <Version>1.0</Version>
     <Description>A simple .NET Core library for handling Alexa skill Notification API</Description>
   </PropertyGroup>
 
