@@ -103,7 +103,7 @@ namespace Alexa.NET.Notifications.Tests
                 Assert.Equal(req.RequestUri.ToString(),
                     new Uri(NotificationClient.EuropeEndpoint, UriKind.Absolute).ToString());
                 Assert.Equal("xxx", req.Headers.Authorization.Parameter);
-                return new HttpResponseMessage(HttpStatusCode.OK)
+                return new HttpResponseMessage(HttpStatusCode.Created)
                 {
                     Content = new StringContent(JObject.FromObject(new NotificationInfo()).ToString())
                 };
